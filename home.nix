@@ -45,6 +45,10 @@ in
   # command-code's binary is `cmd` (a deliberately generic name from upstream).
   home.activation.installNpmGlobalClis = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     export NPM_CONFIG_PREFIX="${npmPrefix}"
+    # Put node on PATH so npm-spawned postinstall scripts (e.g. protobufjs,
+    # pulled in by command-code) can call `node`. Without this the activation
+    # runs in a context where `node` isn't found and the install fails.
+    export PATH="${pkgs.nodejs_24}/bin:$PATH"
     $DRY_RUN_CMD mkdir -p "$NPM_CONFIG_PREFIX/bin"
     $DRY_RUN_CMD "${pkgs.nodejs_24}/bin/npm" install -g @dokploy/cli command-code
   '';
