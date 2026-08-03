@@ -17,3 +17,9 @@ result-*
 
 # no-mistakes local validation state - never commit in this public repo
 .no-mistakes/
+
+# Claude Code user settings hold a personal API token and machine-specific
+# routing - keep them local, never commit to this public repo.
+# home-manager still symlinks ~/.claude/settings.json to this file, so Claude
+# Code reads it unchanged; only git tracking is dropped.
+home/.claude/settings.json

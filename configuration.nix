@@ -36,10 +36,15 @@
     onActivation.extraFlags = [ "--force" ];
     brews = [
       "herdr"
+      "opencode" # AI coding agent; via Homebrew (not nix) for the latest version + /opt/homebrew/bin placement so Open Design detects it - mirrors claude-code
     ];
     casks = [
       "wezterm"
       "claude-code"
+      "open-design" # local-first AI design studio desktop app; bundled agents auto-detect the opencode/claude CLIs
+      "google-chrome"
+      "firefox"
+      "orbstack"    # fast, light Docker Desktop replacement; bundles docker CLI + compose
     ];
   };
 }
