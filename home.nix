@@ -1,7 +1,10 @@
-{ config, pkgs, user, ... }:
+{ config, pkgs, lib, user, ... }:
 
 let
   dotfiles = "${config.home.homeDirectory}/.dotfiles";
+  # npm's writable global prefix. nix node's default global dir lives in the
+  # read-only store, so point npm at a home dir we own and put its bin on PATH.
+  npmPrefix = "${config.home.homeDirectory}/.npm-global";
 in
 
 {
@@ -14,13 +17,37 @@ in
     fd        # fast find
     fzf       # fuzzy finder
     jq        # json on the command line
+    gh        # GitHub CLI
     lazygit
     neovim
+
+    # node development
+    nodejs_24 # install Node.js 24 along with npm and npx
+    pnpm      # fast Node package manager (not via corepack; the Nix store is read-only so `corepack enable` can't place shims)
+    bun       # all-in-one JS runtime, bundler, test runner, and package manager
+
+    # ai coding agents
+    opencode  # AI coding agent for the terminal - powers the `oc` alias and is auto-detected by Open Design
+
     # the font everything renders in
     nerd-fonts.hack
   ];
   fonts.fontconfig.enable = true;
   home.sessionVariables.EDITOR = "nvim";
+
+  # Route npm global installs into a writable prefix (the nix store is
+  # read-only) and put its bin on PATH so manually `npm install -g`'d CLIs run.
+  home.sessionVariables.NPM_CONFIG_PREFIX = npmPrefix;
+  home.sessionPath = [ "${npmPrefix}/bin" ];
+
+  # These ship only on npm (no nixpkgs/brew package), so keep them installed
+  # and current on every rebuild via their supported install method.
+  # command-code's binary is `cmd` (a deliberately generic name from upstream).
+  home.activation.installNpmGlobalClis = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    export NPM_CONFIG_PREFIX="${npmPrefix}"
+    $DRY_RUN_CMD mkdir -p "$NPM_CONFIG_PREFIX/bin"
+    $DRY_RUN_CMD "${pkgs.nodejs_24}/bin/npm" install -g @dokploy/cli command-code
+  '';
 
   programs.zsh = {
     enable = true;
@@ -37,6 +64,7 @@ in
       m = "git switch main";
       cc = "claude --dangerously-skip-permissions";
       co = "codex --full-auto";
+      oc = "opencode --auto";
     };
   };
 

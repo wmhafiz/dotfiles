@@ -40,6 +40,10 @@
     casks = [
       "wezterm"
       "claude-code"
+      "open-design" # local-first AI design studio desktop app; bundled agents auto-detect the opencode/claude CLIs
+      "google-chrome"
+      "firefox"
+      "orbstack"    # fast, light Docker Desktop replacement; bundles docker CLI + compose
     ];
   };
 }
