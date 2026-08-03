@@ -36,6 +36,7 @@
     onActivation.extraFlags = [ "--force" ];
     brews = [
       "herdr"
+      "opencode" # AI coding agent; via Homebrew (not nix) for the latest version + /opt/homebrew/bin placement so Open Design detects it - mirrors claude-code
     ];
     casks = [
       "wezterm"

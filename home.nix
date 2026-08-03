@@ -26,9 +26,6 @@ in
     pnpm      # fast Node package manager (not via corepack; the Nix store is read-only so `corepack enable` can't place shims)
     bun       # all-in-one JS runtime, bundler, test runner, and package manager
 
-    # ai coding agents
-    opencode  # AI coding agent for the terminal - powers the `oc` alias and is auto-detected by Open Design
-
     # the font everything renders in
     nerd-fonts.hack
   ];
